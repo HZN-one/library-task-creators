@@ -45,6 +45,10 @@ export interface IRequestPayloadLog {
     name: string;
   };
   log: any;
+  agent: {
+    app_name: string;
+    [key: string]: string;
+  };
 }
 
 export interface IRequestPayloadBilling {}
