@@ -1,7 +1,7 @@
 {
-  "name": "@hzn/task-creators",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@hzn-one/task-creators",
+  "version": "0.0.1",
+  "description": "A library to create a delivery task in google cloud task",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
