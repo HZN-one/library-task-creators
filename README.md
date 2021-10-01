@@ -13,3 +13,7 @@ An npm package to create a task in Google Cloud Tasks Service.
 | Class                                        | Description                                                            |
 | -------------------------------------------- | ---------------------------------------------------------------------- |
 | DeliveryTaskCreator.insertToDeliveryTracking | Create a task to insert the track data to delivery tracking collection |
+| DeliveryTaskCreator.updateIsCancellable      | Create a task to update is cancellable status in order collection      |
+| DeliveryTaskCreator.insertLog                | Create a task to insert a log                                          |
+| DeliveryTaskCreator.forwardingWebhook        | Create a task to forward the data to client                            |
+| DeliveryTaskCreator.insertBilling            | Create a task to insert the data to billing collection                 |
