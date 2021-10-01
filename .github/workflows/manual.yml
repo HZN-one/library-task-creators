@@ -24,20 +24,6 @@ jobs:
     - run: npm publish --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-    - name: Use Node.js 12 and and set .npmrc for github package registry
-      uses: actions/setup-node@v2
-      with:
-        node-version: '12.x'
-        registry-url: 'https://npm.pkg.github.com'
-        scope: '@hzn-one'
-    - run: git config --global user.name "hzn-one ci/cd"
-    - run: git config --global user.email "ci.cd@hzn.one"
-    - run: npm version ${{ github.event.release.tag_name }}
-    - run: npm install
-    - run: npm run build
-    - run: npm publish --access public
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     - run: git push
       env:
         github-token: ${{ secrets.GITHUB_TOKEN }}
