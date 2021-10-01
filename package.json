@@ -15,9 +15,6 @@
     "type": "git",
     "url": "git+https://github.com/HZN-one/library-task-creators"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/hzn-one"
-  },
   "keywords": [],
   "author": "PT HZN Teknologi Indonesia",
   "license": "ISC",
