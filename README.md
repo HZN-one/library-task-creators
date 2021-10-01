@@ -1,6 +1,6 @@
 # NPM Package: [@hzn-one/task-creators](https://www.npmjs.com/package/@hzn-one/task-creators)
 
-A npm package to create a task in google cloud task.
+An npm package to create a task in Google Cloud Tasks Service.
 
 ## Exported Class
 
