@@ -14,9 +14,8 @@ interface ICourier {
 }
 
 interface ITrack {
-  code?: string;
   status: string;
-  message: string;
+  message?: string;
   createdAt: string;
   courier?: ICourier;
 }
