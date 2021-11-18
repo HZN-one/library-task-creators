@@ -6,7 +6,7 @@ interface ICourier {
   phone?: string;
   pictureUrl?: string;
   coordinates?: { latitude: number; longitude: number };
-  vihacle?: {
+  vehicle?: {
     licensePlate?: string;
     model?: string;
     physicalVehicleType?: string;
