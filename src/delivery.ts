@@ -138,7 +138,7 @@ export class DeliveryTaskCreator {
   public async updateIsCancellable(
     payload: IRequestPayloadIsCancellable
   ): Promise<string> {
-    const url = `https://us-central1-${this.project}.cloudfunctions.net/updateIsCancellable`;
+    const url = `https://us-central1-${this.project}.cloudfunctions.net/isDeliveryCancellable`;
     const queue = "update-is-cancellable";
     const location = "asia-east1";
 
@@ -150,6 +150,7 @@ export class DeliveryTaskCreator {
     );
 
     const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
     return response.name;
   }
 
@@ -187,6 +188,7 @@ export class DeliveryTaskCreator {
     );
 
     const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
     return response.name;
   }
 
@@ -227,6 +229,7 @@ export class DeliveryTaskCreator {
     );
 
     const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
     return response.name;
   }
 
@@ -254,6 +257,7 @@ export class DeliveryTaskCreator {
     );
 
     const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
     return response.name;
   }
 }
