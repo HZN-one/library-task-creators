@@ -112,7 +112,7 @@ export class DeliveryTaskCreator {
     payload: IRequestPayloadInsertToDeliveryTracking
   ): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunctions.net/insertToDeliveryTrackingCollection`;
-    const queue = "insert-to-delivery-tracking-collection";
+    const queue = "insert-to-delivery-tracking-collection-tmp";
     const location = "asia-east1";
 
     const request = this.createRequest<IRequestPayloadInsertToDeliveryTracking>(
