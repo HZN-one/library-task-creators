@@ -52,6 +52,28 @@ export interface IRequestPayloadLog {
 
 export interface IRequestPayloadBilling {}
 
+export interface IRequestChangeDeliveryStatus {
+  deliveryId: string;
+  status:
+    | ""
+    | "NEW ORDER"
+    | "ALLOCATING"
+    | "REJECTED"
+    | "PICKING UP"
+    | "IN DELIVERY"
+    | "DRIVER NOT FOUND"
+    | "ITEM PICKED"
+    | "RECEIVED"
+    | "COMPLETED"
+    | "REACTIVATED"
+    | "ON HOLD"
+    | "CANCELLED"
+    | "DELAYED"
+    | "EXPIRED"
+    | "RETURNED"
+    | "FAILED";
+}
+
 export class DeliveryTaskCreator {
   private project: string;
   private serviceAccountEmail: string;
@@ -247,6 +269,37 @@ export class DeliveryTaskCreator {
   public async insertBilling(payload: IRequestPayloadBilling): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunctions.net/insertBilling`;
     const queue = "insert-billing";
+    const location = "asia-east1";
+
+    const request = this.createRequest<IRequestPayloadBilling>(
+      payload,
+      location,
+      queue,
+      url
+    );
+
+    const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
+    return response.name;
+  }
+
+  /**
+   * A function to update delivery status
+   *
+   * @param payload     Object reference IRequestChangeDeliveryStatus (This interface exported)
+   * @example
+   *
+   *    const deliveryTaskCreator = new DeliveryTaskCreator("PROJECT_ID");
+   *    deliveryTaskCreator.changeDeliveryStatus({
+   *      deliveryId: string,
+   *      status: string
+   *    })
+   */
+  public async changeDeliveryStatus(
+    payload: IRequestChangeDeliveryStatus
+  ): Promise<string> {
+    const url = `https://us-central1-${this.project}.cloudfunctions.net/changeDeliveryStatus`;
+    const queue = "change-delivery-status";
     const location = "asia-east1";
 
     const request = this.createRequest<IRequestPayloadBilling>(
