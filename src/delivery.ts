@@ -16,7 +16,7 @@ interface ICourier {
 interface ITrack {
   status: string;
   message?: string;
-  createdAt: string;
+  createdAt: number;
   courier?: ICourier;
 }
 
@@ -123,7 +123,7 @@ export class DeliveryTaskCreator {
    *       "track": {
    *           "status": "FINISHED",
    *           "message": "Your packet arrived",
-   *             "createdAt": "1231231231231",
+   *             "createdAt": 1231231231231,
    *             "courier": {
    *               "name": "Didik M",
    *               "phone": "0890890980"
@@ -229,7 +229,7 @@ export class DeliveryTaskCreator {
    *       "track": {
    *           "status": "FINISHED",
    *           "message": "Your packet arrived",
-   *             "createdAt": "1231231231231",
+   *             "createdAt": 1231231231231,
    *             "courier": {
    *               "name": "Didik M",
    *               "phone": "0890890980"
