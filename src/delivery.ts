@@ -75,6 +75,13 @@ export interface IRequestChangeDeliveryStatus {
     | "FAILED";
 }
 
+export interface IRequestChangeDeliveryData {
+  deliveryId: string;
+  newDeliveryId?: string;
+  newAmount?: string;
+  newDeliveryStatus?: string;
+}
+
 export class DeliveryTaskCreator {
   private project: string;
   private serviceAccountEmail: string;
@@ -303,7 +310,40 @@ export class DeliveryTaskCreator {
     const queue = "change-delivery-status";
     const location = "asia-east1";
 
-    const request = this.createRequest<IRequestPayloadBilling>(
+    const request = this.createRequest<IRequestChangeDeliveryStatus>(
+      payload,
+      location,
+      queue,
+      url
+    );
+
+    const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
+    return response.name;
+  }
+
+  /**
+   * A function to update delivery status
+   *
+   * @param payload     Object reference IRequestChangeDeliveryData (This interface exported)
+   * @example
+   *
+   *    const deliveryTaskCreator = new DeliveryTaskCreator("PROJECT_ID");
+   *    deliveryTaskCreator = public async changeDeliveryData({
+   *      deliveryId: string,
+   *      newDeliveryId?: string
+   *      newDeliveryStatus?: string
+   *      newAmount?: string
+   *    })
+   */
+  public async changeDeliveryData(
+    payload: IRequestChangeDeliveryData
+  ): Promise<string> {
+    const url = `https://us-central1-${this.project}.cloudfunctions.net/changeDeliveryData`;
+    const queue = "change-delivery-data";
+    const location = "asia-east1";
+
+    const request = this.createRequest<IRequestChangeDeliveryData>(
       payload,
       location,
       queue,
