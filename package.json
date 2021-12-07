@@ -1,6 +1,6 @@
 {
   "name": "@hzn-one/task-creators",
-  "version": "1.0.2",
+  "version": "1.0.9",
   "description": "A library to create a delivery task in google cloud task",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,5 +20,8 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/tasks": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.10"
   }
 }

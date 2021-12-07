@@ -6,7 +6,7 @@ interface ICourier {
   phone?: string;
   pictureUrl?: string;
   coordinates?: { latitude: number; longitude: number };
-  vihacle?: {
+  vehicle?: {
     licensePlate?: string;
     model?: string;
     physicalVehicleType?: string;
@@ -14,10 +14,9 @@ interface ICourier {
 }
 
 interface ITrack {
-  code?: string;
   status: string;
-  message: string;
-  createdAt: string;
+  message?: string;
+  createdAt: number;
   courier?: ICourier;
 }
 
@@ -52,6 +51,29 @@ export interface IRequestPayloadLog {
 }
 
 export interface IRequestPayloadBilling {}
+
+export interface IRequestChangeDeliveryStatus {
+  deliveryId: string;
+  status:
+    | ""
+    | "NEW ORDER"
+    | "ALLOCATING"
+    | "REJECTED"
+    | "DRIVER ASSIGNED"
+    | "PICKING UP"
+    | "DRIVER NOT FOUND"
+    | "ITEM PICKED"
+    | "ON DELIVERY"
+    | "RECEIVED"
+    | "COMPLETED"
+    | "REACTIVATED"
+    | "ON HOLD"
+    | "CANCELLED"
+    | "DELAYED"
+    | "EXPIRED"
+    | "RETURNED"
+    | "FAILED";
+}
 
 export class DeliveryTaskCreator {
   private project: string;
@@ -101,7 +123,7 @@ export class DeliveryTaskCreator {
    *       "track": {
    *           "status": "FINISHED",
    *           "message": "Your packet arrived",
-   *             "createdAt": "1231231231231",
+   *             "createdAt": 1231231231231,
    *             "courier": {
    *               "name": "Didik M",
    *               "phone": "0890890980"
@@ -113,7 +135,7 @@ export class DeliveryTaskCreator {
     payload: IRequestPayloadInsertToDeliveryTracking
   ): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunctions.net/insertToDeliveryTrackingCollection`;
-    const queue = "insert-to-delivery-tracking-collection";
+    const queue = "insert-to-delivery-tracking-collection-tmp";
     const location = "asia-east1";
 
     const request = this.createRequest<IRequestPayloadInsertToDeliveryTracking>(
@@ -139,7 +161,7 @@ export class DeliveryTaskCreator {
   public async updateIsCancellable(
     payload: IRequestPayloadIsCancellable
   ): Promise<string> {
-    const url = `https://us-central1-${this.project}.cloudfunctions.net/updateIsCancellable`;
+    const url = `https://us-central1-${this.project}.cloudfunctions.net/isDeliveryCancellable`;
     const queue = "update-is-cancellable";
     const location = "asia-east1";
 
@@ -151,6 +173,7 @@ export class DeliveryTaskCreator {
     );
 
     const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
     return response.name;
   }
 
@@ -188,6 +211,7 @@ export class DeliveryTaskCreator {
     );
 
     const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
     return response.name;
   }
 
@@ -205,7 +229,7 @@ export class DeliveryTaskCreator {
    *       "track": {
    *           "status": "FINISHED",
    *           "message": "Your packet arrived",
-   *             "createdAt": "1231231231231",
+   *             "createdAt": 1231231231231,
    *             "courier": {
    *               "name": "Didik M",
    *               "phone": "0890890980"
@@ -228,6 +252,7 @@ export class DeliveryTaskCreator {
     );
 
     const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
     return response.name;
   }
 
@@ -255,6 +280,38 @@ export class DeliveryTaskCreator {
     );
 
     const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
+    return response.name;
+  }
+
+  /**
+   * A function to update delivery status
+   *
+   * @param payload     Object reference IRequestChangeDeliveryStatus (This interface exported)
+   * @example
+   *
+   *    const deliveryTaskCreator = new DeliveryTaskCreator("PROJECT_ID");
+   *    deliveryTaskCreator.changeDeliveryStatus({
+   *      deliveryId: string,
+   *      status: string
+   *    })
+   */
+  public async changeDeliveryStatus(
+    payload: IRequestChangeDeliveryStatus
+  ): Promise<string> {
+    const url = `https://us-central1-${this.project}.cloudfunctions.net/changeDeliveryStatus`;
+    const queue = "change-delivery-status";
+    const location = "asia-east1";
+
+    const request = this.createRequest<IRequestPayloadBilling>(
+      payload,
+      location,
+      queue,
+      url
+    );
+
+    const [response] = await client.createTask(request);
+    console.log(`Created task ${response.name}`);
     return response.name;
   }
 }
