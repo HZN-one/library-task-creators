@@ -78,7 +78,7 @@ export interface IRequestChangeDeliveryStatus {
 export interface IRequestChangeDeliveryData {
   deliveryId: string;
   newDeliveryId?: string;
-  newAmount?: string;
+  newAmount?: number;
   newDeliveryStatus?: string;
 }
 
@@ -333,7 +333,7 @@ export class DeliveryTaskCreator {
    *      deliveryId: string,
    *      newDeliveryId?: string
    *      newDeliveryStatus?: string
-   *      newAmount?: string
+   *      newAmount?: number
    *    })
    */
   public async changeDeliveryData(
