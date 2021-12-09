@@ -50,7 +50,10 @@ export interface IRequestPayloadLog {
   };
 }
 
-export interface IRequestPayloadBilling {}
+export interface IRequestPayloadBilling {
+  deliveryId: string;
+  completedAt: number;
+}
 
 export interface IRequestChangeDeliveryStatus {
   deliveryId: string;
@@ -274,9 +277,9 @@ export class DeliveryTaskCreator {
    *
    *    })
    */
-  public async insertBilling(payload: IRequestPayloadBilling): Promise<string> {
-    const url = `https://us-central1-${this.project}.cloudfunctions.net/insertBilling`;
-    const queue = "insert-billing";
+  public async createBilling(payload: IRequestPayloadBilling): Promise<string> {
+    const url = `https://us-central1-${this.project}.cloudfunctions.net/createBilling`;
+    const queue = "create-billing";
     const location = "asia-east1";
 
     const request = this.createRequest<IRequestPayloadBilling>(
@@ -323,7 +326,7 @@ export class DeliveryTaskCreator {
   }
 
   /**
-   * A function to update delivery status
+   * A function to update delivery data
    *
    * @param payload     Object reference IRequestChangeDeliveryData (This interface exported)
    * @example
