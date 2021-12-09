@@ -27,6 +27,7 @@ export interface IDeliveryTaskCreator {
 export interface IRequestPayloadInsertToDeliveryTracking {
   id: string;
   status: string;
+  generalStatus?: string;
   trackingUrl?: string;
   track: ITrack;
 }
