@@ -149,15 +149,21 @@ export class DeliveryTaskCreator {
     const queue = "insert-to-delivery-tracking-collection-tmp";
     const location = "asia-east1";
 
-    const request = this.createRequest<IRequestPayloadInsertToDeliveryTracking>(
-      payload,
-      location,
-      queue,
-      url
-    );
-    const [response] = await client.createTask(request);
-    console.log(`Created task ${response.name}`);
-    return response.name;
+    try {
+      const request =
+        this.createRequest<IRequestPayloadInsertToDeliveryTracking>(
+          payload,
+          location,
+          queue,
+          url
+        );
+      const [response] = await client.createTask(request);
+      console.log(`Created task ${response.name}`);
+      return response.name;
+    } catch (error) {
+      console.log(`Error insertToDeliveryTracking: `, error);
+      return error;
+    }
   }
 
   /**
@@ -176,16 +182,21 @@ export class DeliveryTaskCreator {
     const queue = "update-is-cancellable";
     const location = "asia-east1";
 
-    const request = this.createRequest<IRequestPayloadIsCancellable>(
-      payload,
-      location,
-      queue,
-      url
-    );
+    try {
+      const request = this.createRequest<IRequestPayloadIsCancellable>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
-    const [response] = await client.createTask(request);
-    console.log(`Created task ${response.name}`);
-    return response.name;
+      const [response] = await client.createTask(request);
+      console.log(`Created task ${response.name}`);
+      return response.name;
+    } catch (error) {
+      console.log(`Error updateIsCancellable: `, error);
+      return error;
+    }
   }
 
   /**
@@ -214,16 +225,21 @@ export class DeliveryTaskCreator {
     const queue = "insert-log";
     const location = "asia-east1";
 
-    const request = this.createRequest<IRequestPayloadLog>(
-      payload,
-      location,
-      queue,
-      url
-    );
+    try {
+      const request = this.createRequest<IRequestPayloadLog>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
-    const [response] = await client.createTask(request);
-    console.log(`Created task ${response.name}`);
-    return response.name;
+      const [response] = await client.createTask(request);
+      console.log(`Created task ${response.name}`);
+      return response.name;
+    } catch (error) {
+      console.log(`Error insertLog: `, error);
+      return error;
+    }
   }
 
   /**
@@ -255,16 +271,22 @@ export class DeliveryTaskCreator {
     const queue = "forwarding-webhook";
     const location = "asia-east1";
 
-    const request = this.createRequest<IRequestPayloadInsertToDeliveryTracking>(
-      payload,
-      location,
-      queue,
-      url
-    );
+    try {
+      const request =
+        this.createRequest<IRequestPayloadInsertToDeliveryTracking>(
+          payload,
+          location,
+          queue,
+          url
+        );
 
-    const [response] = await client.createTask(request);
-    console.log(`Created task ${response.name}`);
-    return response.name;
+      const [response] = await client.createTask(request);
+      console.log(`Created task ${response.name}`);
+      return response.name;
+    } catch (error) {
+      console.log(`Error forwardingWebhook: `, error);
+      return error;
+    }
   }
 
   /**
@@ -283,16 +305,21 @@ export class DeliveryTaskCreator {
     const queue = "create-billing";
     const location = "asia-east1";
 
-    const request = this.createRequest<IRequestPayloadBilling>(
-      payload,
-      location,
-      queue,
-      url
-    );
+    try {
+      const request = this.createRequest<IRequestPayloadBilling>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
-    const [response] = await client.createTask(request);
-    console.log(`Created task ${response.name}`);
-    return response.name;
+      const [response] = await client.createTask(request);
+      console.log(`Created task ${response.name}`);
+      return response.name;
+    } catch (error) {
+      console.log(`Error createBilling: `, error);
+      return error;
+    }
   }
 
   /**
@@ -314,16 +341,21 @@ export class DeliveryTaskCreator {
     const queue = "change-delivery-status";
     const location = "asia-east1";
 
-    const request = this.createRequest<IRequestChangeDeliveryStatus>(
-      payload,
-      location,
-      queue,
-      url
-    );
+    try {
+      const request = this.createRequest<IRequestChangeDeliveryStatus>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
-    const [response] = await client.createTask(request);
-    console.log(`Created task ${response.name}`);
-    return response.name;
+      const [response] = await client.createTask(request);
+      console.log(`Created task ${response.name}`);
+      return response.name;
+    } catch (error) {
+      console.log(`Error changeDeliveryStatus: `, error);
+      return error;
+    }
   }
 
   /**
@@ -347,15 +379,20 @@ export class DeliveryTaskCreator {
     const queue = "change-delivery-data";
     const location = "asia-east1";
 
-    const request = this.createRequest<IRequestChangeDeliveryData>(
-      payload,
-      location,
-      queue,
-      url
-    );
+    try {
+      const request = this.createRequest<IRequestChangeDeliveryData>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
-    const [response] = await client.createTask(request);
-    console.log(`Created task ${response.name}`);
-    return response.name;
+      const [response] = await client.createTask(request);
+      console.log(`Created task ${response.name}`);
+      return response.name;
+    } catch (error) {
+      console.log(`Error changeDeliveryData: `, error);
+      return error;
+    }
   }
 }
