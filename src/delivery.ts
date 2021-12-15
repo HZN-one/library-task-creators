@@ -89,6 +89,7 @@ export interface IRequestChangeDeliveryData {
 export interface IRequestSimulateWebhook {
   deliveryId: string;
   serviceUrl: string;
+  updatedAt: number;
 }
 
 export class DeliveryTaskCreator {
@@ -358,8 +359,9 @@ export class DeliveryTaskCreator {
    *    const deliveryTaskCreator = new DeliveryTaskCreator("PROJECT_ID");
    *    deliveryTaskCreator = public async simulateWebhook({
    *      deliveryId: string,
-   *      serviceUrl: string
-   *    })
+   *      serviceUrl: string,
+   *      updatedAt: number,
+   *    });
    */
   public async simulateWebhook(payload: IRequestSimulateWebhook): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunction.net/simulateWebhook`;
