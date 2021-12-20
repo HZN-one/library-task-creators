@@ -364,7 +364,7 @@ export class DeliveryTaskCreator {
    *    });
    */
   public async simulateWebhook(payload: IRequestSimulateWebhook): Promise<string> {
-    const url = `https://us-central1-${this.project}.cloudfunction.net/simulateWebhook`;
+    const url = `https://us-central1-${this.project}.cloudfunctions.net/simulateWebhook`;
     const queue = 'simulate-webhook';
     const location = 'asia-east1';
 
