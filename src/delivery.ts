@@ -89,8 +89,8 @@ export interface IRequestChangeDeliveryData {
 export interface IRequestSimulateWebhook {
   deliveryId: string;
   serviceUrl: string;
-  schedule_executed_at: number;
-  last_notification_at: number;
+  scheduleExecutedAt: number;
+  lastNotificationAt: number;
 }
 
 export class DeliveryTaskCreator {
