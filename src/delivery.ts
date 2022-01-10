@@ -76,7 +76,26 @@ export interface IRequestChangeDeliveryStatus {
     | 'DELAYED'
     | 'EXPIRED'
     | 'RETURNED'
-    | 'FAILED';
+    | 'FAILED'
+    | 'ORDER MANIFESTED'
+    | 'ALLOCATING COURRIER'
+    | 'COURRIER EN-ROUTE TO PICKUP'
+    | 'PICKUP SUCCEDED'
+    | 'PICKUP FAILED'
+    | 'REASSIGN COURRIER'
+    | 'ARRIVED AT SORTING HUB'
+    | 'ON PROCESS AT SORTING HUB'
+    | 'DEPARTED FROM SORTING HUB'
+    | 'SHIPMENT ARRIVED'
+    | 'SHIPMENT IN TRANSIT'
+    | 'DEPARTED TO DESTINATION'
+    | 'SHIPMENT RECEIVED'
+    | 'CANCEL BY SYSTEM'
+    | 'CANCEL BY ADMIN'
+    | 'CANCEL BY USER'
+    | 'ON HOLD'
+    | 'SHIPMENT RETURNED'
+    | 'RETURNED TO SENDER';
 }
 
 export interface IRequestChangeDeliveryData {
