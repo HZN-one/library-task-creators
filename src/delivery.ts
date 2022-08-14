@@ -93,7 +93,8 @@ export interface IRequestChangeDeliveryData {
 export interface IRequestSimulateWebhook {
   deliveryId: string;
   serviceUrl: string;
-  updatedAt: number;
+  scheduleExecutedAt: number;
+  lastNotificationAt: number;
 }
 
 export class DeliveryTaskCreator {
@@ -422,7 +423,20 @@ export class DeliveryTaskCreator {
   public async simulateWebhook(
     payload: IRequestSimulateWebhook
   ): Promise<string> {
-    const url = `https://us-central1-${this.project}.cloudfunction.net/simulateWebhook`;
+    let url: string;
+    switch (this.project) {
+      case "hzn-production":
+        url =
+          "https://delivery-partners-queue-run-production-vtbootglhq-uc.a.run.app/v1/webhooks/simulate";
+        break;
+      case "hzn-sandbox":
+        url =
+          "https://delivery-partners-queue-run-sandbox-adchrwkija-uc.a.run.app/v1/webhooks/simulate";
+        break;
+      default:
+        url =
+          "https://delivery-partners-queue-run-development-ai2gu4pljq-uc.a.run.app/v1/webhooks/simulate";
+    }
     const queue = "simulate-webhook";
     const location = "asia-east1";
 
