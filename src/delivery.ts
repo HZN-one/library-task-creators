@@ -1,4 +1,4 @@
-const { CloudTasksClient } = require('@google-cloud/tasks');
+const { CloudTasksClient } = require("@google-cloud/tasks");
 const client = new CloudTasksClient();
 
 interface ICourier {
@@ -30,6 +30,7 @@ export interface IRequestPayloadInsertToDeliveryTracking {
   generalStatus?: string;
   trackingUrl?: string;
   track: ITrack;
+  photos?: string[];
 }
 
 export interface IRequestPayloadIsCancellable {
@@ -37,9 +38,9 @@ export interface IRequestPayloadIsCancellable {
 }
 export interface IRequestPayloadLog {
   clientId: string;
-  category: 'ACTIVITY' | 'API CALL' | 'AUTHENTICATION' | 'WEBHOOK';
-  type: 'INFO' | 'ERROR';
-  target: 'HZN' | 'CLIENT';
+  category: "ACTIVITY" | "API CALL" | "AUTHENTICATION" | "WEBHOOK";
+  type: "INFO" | "ERROR";
+  target: "HZN" | "CLIENT";
   hznProduct: {
     id: string;
     name: string;
@@ -59,24 +60,24 @@ export interface IRequestPayloadBilling {
 export interface IRequestChangeDeliveryStatus {
   deliveryId: string;
   status:
-    | ''
-    | 'NEW ORDER'
-    | 'ALLOCATING'
-    | 'REJECTED'
-    | 'DRIVER ASSIGNED'
-    | 'PICKING UP'
-    | 'DRIVER NOT FOUND'
-    | 'ITEM PICKED'
-    | 'ON DELIVERY'
-    | 'RECEIVED'
-    | 'COMPLETED'
-    | 'REACTIVATED'
-    | 'ON HOLD'
-    | 'CANCELLED'
-    | 'DELAYED'
-    | 'EXPIRED'
-    | 'RETURNED'
-    | 'FAILED';
+    | ""
+    | "NEW ORDER"
+    | "ALLOCATING"
+    | "REJECTED"
+    | "DRIVER ASSIGNED"
+    | "PICKING UP"
+    | "DRIVER NOT FOUND"
+    | "ITEM PICKED"
+    | "ON DELIVERY"
+    | "RECEIVED"
+    | "COMPLETED"
+    | "REACTIVATED"
+    | "ON HOLD"
+    | "CANCELLED"
+    | "DELAYED"
+    | "EXPIRED"
+    | "RETURNED"
+    | "FAILED";
 }
 
 export interface IRequestChangeDeliveryData {
@@ -84,6 +85,9 @@ export interface IRequestChangeDeliveryData {
   newDeliveryId?: string;
   newAmount?: number;
   newDeliveryStatus?: string;
+  deliveryProofs?: string[];
+  signatures?: string;
+  trackingUrl?: string;
 }
 
 export interface IRequestSimulateWebhook {
@@ -101,16 +105,21 @@ export class DeliveryTaskCreator {
     this.serviceAccountEmail = `${project}@appspot.gserviceaccount.com`;
   }
 
-  private createRequest<T>(payload: T, location: string, queue: string, url: string) {
+  private createRequest<T>(
+    payload: T,
+    location: string,
+    queue: string,
+    url: string
+  ) {
     const parent = client.queuePath(this.project, location, queue);
     const serviceAccountEmail = this.serviceAccountEmail;
     const task = {
       httpRequest: {
-        httpMethod: 'POST',
+        httpMethod: "POST",
         url,
-        body: Buffer.from(JSON.stringify(payload)).toString('base64'),
+        body: Buffer.from(JSON.stringify(payload)).toString("base64"),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         oidcToken: {
           serviceAccountEmail,
@@ -143,13 +152,21 @@ export class DeliveryTaskCreator {
    *       }
    *     })
    */
-  public async insertToDeliveryTracking(payload: IRequestPayloadInsertToDeliveryTracking): Promise<string> {
+  public async insertToDeliveryTracking(
+    payload: IRequestPayloadInsertToDeliveryTracking
+  ): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunctions.net/insertToDeliveryTrackingCollection`;
-    const queue = 'insert-to-delivery-tracking-collection-tmp';
-    const location = 'asia-east1';
+    const queue = "insert-to-delivery-tracking-collection-tmp";
+    const location = "asia-east1";
 
     try {
-      const request = this.createRequest<IRequestPayloadInsertToDeliveryTracking>(payload, location, queue, url);
+      const request =
+        this.createRequest<IRequestPayloadInsertToDeliveryTracking>(
+          payload,
+          location,
+          queue,
+          url
+        );
       const [response] = await client.createTask(request);
       console.log(`Created task ${response.name}`);
       return response.name;
@@ -168,13 +185,20 @@ export class DeliveryTaskCreator {
    *    const deliveryTaskCreator = new DeliveryTaskCreator("PROJECT_ID");
    *    deliveryTaskCreator.updateIsCancellable("DELIVERY_ID")
    */
-  public async updateIsCancellable(payload: IRequestPayloadIsCancellable): Promise<string> {
+  public async updateIsCancellable(
+    payload: IRequestPayloadIsCancellable
+  ): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunctions.net/isDeliveryCancellable`;
-    const queue = 'update-is-cancellable';
-    const location = 'asia-east1';
+    const queue = "update-is-cancellable";
+    const location = "asia-east1";
 
     try {
-      const request = this.createRequest<IRequestPayloadIsCancellable>(payload, location, queue, url);
+      const request = this.createRequest<IRequestPayloadIsCancellable>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
       const [response] = await client.createTask(request);
       console.log(`Created task ${response.name}`);
@@ -208,11 +232,16 @@ export class DeliveryTaskCreator {
    */
   public async insertLog(payload: IRequestPayloadLog): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunctions.net/insertLog`;
-    const queue = 'insert-log';
-    const location = 'asia-east1';
+    const queue = "insert-log";
+    const location = "asia-east1";
 
     try {
-      const request = this.createRequest<IRequestPayloadLog>(payload, location, queue, url);
+      const request = this.createRequest<IRequestPayloadLog>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
       const [response] = await client.createTask(request);
       console.log(`Created task ${response.name}`);
@@ -245,13 +274,21 @@ export class DeliveryTaskCreator {
    *       }
    *    })
    */
-  public async forwardingWebhook(payload: IRequestPayloadInsertToDeliveryTracking): Promise<string> {
+  public async forwardingWebhook(
+    payload: IRequestPayloadInsertToDeliveryTracking
+  ): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunctions.net/forwardingWebhook`;
-    const queue = 'forwarding-webhook';
-    const location = 'asia-east1';
+    const queue = "forwarding-webhook";
+    const location = "asia-east1";
 
     try {
-      const request = this.createRequest<IRequestPayloadInsertToDeliveryTracking>(payload, location, queue, url);
+      const request =
+        this.createRequest<IRequestPayloadInsertToDeliveryTracking>(
+          payload,
+          location,
+          queue,
+          url
+        );
 
       const [response] = await client.createTask(request);
       console.log(`Created task ${response.name}`);
@@ -275,11 +312,16 @@ export class DeliveryTaskCreator {
    */
   public async createBilling(payload: IRequestPayloadBilling): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunctions.net/createBilling`;
-    const queue = 'create-billing';
-    const location = 'asia-east1';
+    const queue = "create-billing";
+    const location = "asia-east1";
 
     try {
-      const request = this.createRequest<IRequestPayloadBilling>(payload, location, queue, url);
+      const request = this.createRequest<IRequestPayloadBilling>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
       const [response] = await client.createTask(request);
       console.log(`Created task ${response.name}`);
@@ -302,13 +344,20 @@ export class DeliveryTaskCreator {
    *      status: string
    *    })
    */
-  public async changeDeliveryStatus(payload: IRequestChangeDeliveryStatus): Promise<string> {
+  public async changeDeliveryStatus(
+    payload: IRequestChangeDeliveryStatus
+  ): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunctions.net/changeDeliveryStatus`;
-    const queue = 'change-delivery-status';
-    const location = 'asia-east1';
+    const queue = "change-delivery-status";
+    const location = "asia-east1";
 
     try {
-      const request = this.createRequest<IRequestChangeDeliveryStatus>(payload, location, queue, url);
+      const request = this.createRequest<IRequestChangeDeliveryStatus>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
       const [response] = await client.createTask(request);
       console.log(`Created task ${response.name}`);
@@ -333,13 +382,20 @@ export class DeliveryTaskCreator {
    *      newAmount?: number
    *    })
    */
-  public async changeDeliveryData(payload: IRequestChangeDeliveryData): Promise<string> {
+  public async changeDeliveryData(
+    payload: IRequestChangeDeliveryData
+  ): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunctions.net/changeDeliveryData`;
-    const queue = 'change-delivery-data';
-    const location = 'asia-east1';
+    const queue = "change-delivery-data";
+    const location = "asia-east1";
 
     try {
-      const request = this.createRequest<IRequestChangeDeliveryData>(payload, location, queue, url);
+      const request = this.createRequest<IRequestChangeDeliveryData>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
       const [response] = await client.createTask(request);
       console.log(`Created task ${response.name}`);
@@ -363,13 +419,20 @@ export class DeliveryTaskCreator {
    *      updatedAt: number,
    *    });
    */
-  public async simulateWebhook(payload: IRequestSimulateWebhook): Promise<string> {
+  public async simulateWebhook(
+    payload: IRequestSimulateWebhook
+  ): Promise<string> {
     const url = `https://us-central1-${this.project}.cloudfunction.net/simulateWebhook`;
-    const queue = 'simulate-webhook';
-    const location = 'asia-east1';
+    const queue = "simulate-webhook";
+    const location = "asia-east1";
 
     try {
-      const request = this.createRequest<IRequestSimulateWebhook>(payload, location, queue, url);
+      const request = this.createRequest<IRequestSimulateWebhook>(
+        payload,
+        location,
+        queue,
+        url
+      );
 
       const [response] = await client.createTask(request);
       console.log(`Created task ${response.name}`);
