@@ -1,24 +1,70 @@
 const { CloudTasksClient } = require("@google-cloud/tasks");
 const client = new CloudTasksClient();
 
+export type HZNDeliveryStatus =  
+| ""
+| "NEW ORDER"
+| "ALLOCATING"
+| "REJECTED"
+| "DRIVER ASSIGNED"
+| "PICKING UP"
+| "DRIVER NOT FOUND"
+| "ITEM PICKED"
+| "ON DELIVERY"
+| "RECEIVED"
+| "COMPLETED"
+| "REACTIVATED"
+| "ON HOLD"
+| "CANCELLED"
+| "DELAYED"
+| "EXPIRED"
+| "RETURNED"
+| "FAILED";
+
 interface ICourier {
+  /**
+   * Courier name
+   */
   name: string;
+  /**
+   * Phone number in string, any format
+   */
   phone?: string;
+  /**
+   * Driver picture URL, example: https://....
+   */
   pictureUrl?: string;
+  /**
+   * Location driver
+   */
   coordinates?: { latitude: number; longitude: number };
   vehicle?: {
+    /**
+     *  license plate number, example: A 3333 SYY
+     */
     licensePlate?: string;
-    model?: string;
-    physicalVehicleType?: string;
   };
 }
 
 interface ITrack {
+  /**
+   * Partner status, each partner mostly have different status
+   */
   status: string;
+  /**
+   * Any message regarding notification
+   */
   message?: string;
+  /**
+   * UTC
+   */
   createdAt: number;
+  /**
+   * Courier detail
+   */
   courier?: ICourier;
 }
+
 
 export interface IDeliveryTaskCreator {
   project: string;
@@ -26,16 +72,34 @@ export interface IDeliveryTaskCreator {
 
 export interface IRequestPayloadInsertToDeliveryTracking {
   id: string;
-  status: string;
-  generalStatus?: string;
+  /**
+   * HZN Delivery status
+   */
+  status: HZNDeliveryStatus;
+  /**
+   * URL of tracking
+   */
   trackingUrl?: string;
+  /**
+   * detail tracking
+   */
   track: ITrack;
+  /**
+   * URL of photo regarding status
+   */
   photos?: string[];
 }
 
 export interface IRequestPayloadIsCancellable {
+  /**
+   * Delivery ID is an order ID that coming from partner.
+   * Some partner call it like "deliveryId", "reffno", "transaction_id"
+   * 
+   * Some partner use delivery ID as their awb/receipt number
+   */
   deliveryId: string;
 }
+
 export interface IRequestPayloadLog {
   clientId: string;
   category: "ACTIVITY" | "API CALL" | "AUTHENTICATION" | "WEBHOOK";
@@ -53,47 +117,74 @@ export interface IRequestPayloadLog {
 }
 
 export interface IRequestPayloadBilling {
+  /**
+   * Delivery ID is an order ID that coming from partner.
+   * Some partner call it like "deliveryId", "reffno", "transaction_id"
+   * 
+   * Some partner use delivery ID as their awb/receipt number
+   */
   deliveryId: string;
   completedAt: number;
 }
 
 export interface IRequestChangeDeliveryStatus {
+  /**
+   * Delivery ID is an order ID that coming from partner.
+   * Some partner call it like "deliveryId", "reffno", "transaction_id"
+   * 
+   * Some partner use delivery ID as their awb/receipt number
+   */
   deliveryId: string;
-  status:
-    | ""
-    | "NEW ORDER"
-    | "ALLOCATING"
-    | "REJECTED"
-    | "DRIVER ASSIGNED"
-    | "PICKING UP"
-    | "DRIVER NOT FOUND"
-    | "ITEM PICKED"
-    | "ON DELIVERY"
-    | "RECEIVED"
-    | "COMPLETED"
-    | "REACTIVATED"
-    | "ON HOLD"
-    | "CANCELLED"
-    | "DELAYED"
-    | "EXPIRED"
-    | "RETURNED"
-    | "FAILED";
+  status: HZNDeliveryStatus;
 }
 
 export interface IRequestChangeDeliveryData {
+  /**
+   * Delivery ID is an order ID that coming from partner.
+   * Some partner call it like "deliveryId", "reffno", "transaction_id"
+   * 
+   * Some partner use delivery ID as their awb/receipt number
+   */
   deliveryId: string;
   newDeliveryId?: string;
+  /**
+   * Will update finalFee
+   */
   newAmount?: number;
-  newDeliveryStatus?: string;
+  /**
+   * Will update delivery status
+   */
+  newDeliveryStatus?: HZNDeliveryStatus;
+  /**
+   * URL of delivery proof
+   */
   deliveryProofs?: string[];
-  signatures?: string;
+  /**
+   * URL of signature
+   */
+  signature?: string;
+  /**
+   * URL of tracking
+   */
   trackingUrl?: string;
 }
 
 export interface IRequestSimulateWebhook {
+  /**
+   * Delivery ID is an order ID that coming from partner.
+   * Some partner call it like "deliveryId", "reffno", "transaction_id"
+   * 
+   * Some partner use delivery ID as their awb/receipt number
+   */
   deliveryId: string;
   serviceUrl: string;
+  /**
+   * Determine when an order with manual webhook is true will executed 
+   */
   scheduleExecutedAt: number;
+  /**
+   * Determine to filter notifications that are not stored yet in system
+   */
   lastNotificationAt: number;
 }
 
@@ -262,7 +353,7 @@ export class DeliveryTaskCreator {
    *    const deliveryTaskCreator = new DeliveryTaskCreator("PROJECT_ID");
    *    deliveryTaskCreator.forwardingWebhook({
    *       "id": "1111",
-   *       "status": "FINISHED",
+   *       "status": "COMPLETED",
    *       "trackingUrl": "",
    *       "track": {
    *           "status": "FINISHED",
