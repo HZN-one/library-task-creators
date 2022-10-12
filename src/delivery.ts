@@ -514,21 +514,25 @@ export class DeliveryTaskCreator {
     payload: IRequestSimulateWebhook
   ): Promise<string> {
     let url: string;
+    let location: string;
+
     switch (this.project) {
       case "hzn-production":
+        location = "us-central1";
         url =
           "https://delivery-partners-queue-run-production-vtbootglhq-uc.a.run.app/v1/webhooks/simulate";
         break;
       case "hzn-sandbox":
+        location = "asia-east1";
         url =
           "https://delivery-partners-queue-run-sandbox-adchrwkija-uc.a.run.app/v1/webhooks/simulate";
         break;
       default:
+        location = "asia-east1";
         url =
           "https://delivery-partners-queue-run-development-ai2gu4pljq-uc.a.run.app/v1/webhooks/simulate";
     }
     const queue = "simulate-webhook";
-    const location = "asia-east1";
 
     try {
       const request = this.createRequest<IRequestSimulateWebhook>(
