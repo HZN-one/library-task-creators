@@ -1,25 +1,25 @@
 const { CloudTasksClient } = require("@google-cloud/tasks");
 const client = new CloudTasksClient();
 
-export type HZNDeliveryStatus =  
-| ""
-| "NEW ORDER"
-| "ALLOCATING"
-| "REJECTED"
-| "DRIVER ASSIGNED"
-| "PICKING UP"
-| "DRIVER NOT FOUND"
-| "ITEM PICKED"
-| "ON DELIVERY"
-| "RECEIVED"
-| "COMPLETED"
-| "REACTIVATED"
-| "ON HOLD"
-| "CANCELLED"
-| "DELAYED"
-| "EXPIRED"
-| "RETURNED"
-| "FAILED";
+export type HZNDeliveryStatus =
+  | ""
+  | "NEW ORDER"
+  | "ALLOCATING"
+  | "REJECTED"
+  | "DRIVER ASSIGNED"
+  | "PICKING UP"
+  | "DRIVER NOT FOUND"
+  | "ITEM PICKED"
+  | "ON DELIVERY"
+  | "RECEIVED"
+  | "COMPLETED"
+  | "REACTIVATED"
+  | "ON HOLD"
+  | "CANCELLED"
+  | "DELAYED"
+  | "EXPIRED"
+  | "RETURNED"
+  | "FAILED";
 
 interface ICourier {
   /**
@@ -65,7 +65,6 @@ interface ITrack {
   courier?: ICourier;
 }
 
-
 export interface IDeliveryTaskCreator {
   project: string;
 }
@@ -94,7 +93,7 @@ export interface IRequestPayloadIsCancellable {
   /**
    * Delivery ID is an order ID that coming from partner.
    * Some partner call it like "deliveryId", "reffno", "transaction_id"
-   * 
+   *
    * Some partner use delivery ID as their awb/receipt number
    */
   deliveryId: string;
@@ -120,7 +119,7 @@ export interface IRequestPayloadBilling {
   /**
    * Delivery ID is an order ID that coming from partner.
    * Some partner call it like "deliveryId", "reffno", "transaction_id"
-   * 
+   *
    * Some partner use delivery ID as their awb/receipt number
    */
   deliveryId: string;
@@ -131,7 +130,7 @@ export interface IRequestChangeDeliveryStatus {
   /**
    * Delivery ID is an order ID that coming from partner.
    * Some partner call it like "deliveryId", "reffno", "transaction_id"
-   * 
+   *
    * Some partner use delivery ID as their awb/receipt number
    */
   deliveryId: string;
@@ -142,7 +141,7 @@ export interface IRequestChangeDeliveryData {
   /**
    * Delivery ID is an order ID that coming from partner.
    * Some partner call it like "deliveryId", "reffno", "transaction_id"
-   * 
+   *
    * Some partner use delivery ID as their awb/receipt number
    */
   deliveryId: string;
@@ -173,13 +172,13 @@ export interface IRequestSimulateWebhook {
   /**
    * Delivery ID is an order ID that coming from partner.
    * Some partner call it like "deliveryId", "reffno", "transaction_id"
-   * 
+   *
    * Some partner use delivery ID as their awb/receipt number
    */
   deliveryId: string;
   serviceUrl: string;
   /**
-   * Determine when an order with manual webhook is true will executed 
+   * Determine when an order with manual webhook is true will executed
    */
   scheduleExecutedAt: number;
   /**
@@ -515,21 +514,25 @@ export class DeliveryTaskCreator {
     payload: IRequestSimulateWebhook
   ): Promise<string> {
     let url: string;
+    let location: string;
+
     switch (this.project) {
       case "hzn-production":
+        location = "us-central1";
         url =
           "https://delivery-partners-queue-run-production-vtbootglhq-uc.a.run.app/v1/webhooks/simulate";
         break;
       case "hzn-sandbox":
+        location = "asia-east1";
         url =
           "https://delivery-partners-queue-run-sandbox-adchrwkija-uc.a.run.app/v1/webhooks/simulate";
         break;
       default:
+        location = "asia-east1";
         url =
           "https://delivery-partners-queue-run-development-ai2gu4pljq-uc.a.run.app/v1/webhooks/simulate";
     }
     const queue = "simulate-webhook";
-    const location = "asia-east1";
 
     try {
       const request = this.createRequest<IRequestSimulateWebhook>(
