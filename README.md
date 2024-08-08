@@ -17,3 +17,4 @@ An npm package to create a task in Google Cloud Tasks Service.
 | DeliveryTaskCreator.insertLog                | Create a task to insert a log                                          |
 | DeliveryTaskCreator.forwardingWebhook        | Create a task to forward the data to client                            |
 | DeliveryTaskCreator.insertBilling            | Create a task to insert the data to billing collection                 |
+| DeliveryTaskCreator.createNewOrderWhenDriverNotFound            | Create a task to create new order when driver not found                |
