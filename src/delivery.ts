@@ -580,7 +580,7 @@ export class DeliveryTaskCreator {
     const location = "asia-east1";
 
     try {
-      const request = this.createRequest<IRequestChangeDeliveryData>(
+      const request = this.createRequest<IRequestcreateNewOrderWhenDriverNotFound>(
         payload,
         location,
         queue,
