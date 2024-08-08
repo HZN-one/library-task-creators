@@ -187,6 +187,16 @@ export interface IRequestSimulateWebhook {
   lastNotificationAt: number;
 }
 
+export interface IRequestcreateNewOrderWhenDriverNotFound {
+ /**
+   * Delivery ID is an order ID that coming from partner.
+   * Some partner call it like "deliveryId", "reffno", "transaction_id"
+   *
+   * Some partner use delivery ID as their awb/receipt number
+   */
+ deliveryId: string;
+}
+
 export class DeliveryTaskCreator {
   private project: string;
   private serviceAccountEmail: string;
@@ -550,4 +560,40 @@ export class DeliveryTaskCreator {
       return error;
     }
   }
+
+  /**
+   * A function to update delivery data
+   *
+   * @param payload     Object reference IRequestcreateNewOrderWhenDriverNotFound (This interface exported)
+   * @example
+   *
+   *    const deliveryTaskCreator = new DeliveryTaskCreator("PROJECT_ID");
+   *    deliveryTaskCreator = public async createNewOrderWhenDriverNotFound({
+   *      deliveryId: string
+   *    })
+   */
+  public async createNewOrderWhenDriverNotFound(
+    payload: IRequestcreateNewOrderWhenDriverNotFound
+  ): Promise<string> {
+    const url = `https://us-central1-${this.project}.cloudfunctions.net/createNewOrderWhenDriverNotFound`;
+    const queue = "create-neworder-whendriver-notfound-data";
+    const location = "asia-east1";
+
+    try {
+      const request = this.createRequest<IRequestcreateNewOrderWhenDriverNotFound>(
+        payload,
+        location,
+        queue,
+        url
+      );
+
+      const [response] = await client.createTask(request);
+      console.log(`Created task ${response.name}`);
+      return response.name;
+    } catch (error) {
+      console.log(`Error createNewOrderWhenDriverNotFound: `, error);
+      return error;
+    }
+  }
+
 }
